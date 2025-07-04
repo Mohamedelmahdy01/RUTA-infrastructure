@@ -27,6 +27,15 @@ resource "aws_subnet" "private" {
   }
 }
 
+resource "aws_subnet" "private_az2" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.3.0/24"
+  availability_zone = "${var.aws_region}b"
+  tags = {
+    Name = "${var.project_name}-private-az2"
+  }
+}
+
 // Internet Gateway
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.main.id
@@ -61,6 +70,11 @@ resource "aws_route_table" "private" {
 
 resource "aws_route_table_association" "private" {
   subnet_id      = aws_subnet.private.id
+  route_table_id = aws_route_table.private.id
+}
+
+resource "aws_route_table_association" "private_az2" {
+  subnet_id      = aws_subnet.private_az2.id
   route_table_id = aws_route_table.private.id
 }
 
@@ -160,7 +174,10 @@ resource "aws_db_instance" "mysql" {
 
 resource "aws_db_subnet_group" "mysql" {
   name       = "${var.project_name}-mysql-subnet-group"
-  subnet_ids = [aws_subnet.private.id]
+  subnet_ids = [
+    aws_subnet.private.id,
+    aws_subnet.private_az2.id
+  ]
   tags = {
     Name = "${var.project_name}-mysql-subnet-group"
   }
