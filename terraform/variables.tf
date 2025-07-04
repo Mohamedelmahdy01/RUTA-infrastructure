@@ -14,7 +14,7 @@ variable "db_password" {
   description = "Password for the RDS MySQL instance."
   type        = string
   sensitive   = true
-  default     = p@ssword
+  default     = "p@ssword"
 }
 
 variable "ec2_key_name" {
