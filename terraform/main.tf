@@ -17,7 +17,7 @@ resource "aws_subnet" "public" {
   }
 }
 
-// Private Subnet
+// Private Subnet (للقاعدة فقط)
 resource "aws_subnet" "private" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.2.0/24"
@@ -32,19 +32,6 @@ resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.main.id
   tags = {
     Name = "${var.project_name}-igw"
-  }
-}
-
-// NAT Gateway (Elastic IP)
-resource "aws_eip" "nat" {
-  vpc = true
-}
-
-resource "aws_nat_gateway" "nat" {
-  allocation_id = aws_eip.nat.id
-  subnet_id     = aws_subnet.public.id
-  tags = {
-    Name = "${var.project_name}-nat"
   }
 }
 
@@ -67,10 +54,7 @@ resource "aws_route_table_association" "public" {
 
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.nat.id
-  }
+  # لا يوجد route للإنترنت (قاعدة البيانات محمية)
   tags = {
     Name = "${var.project_name}-private-rt"
   }
@@ -81,7 +65,7 @@ resource "aws_route_table_association" "private" {
   route_table_id = aws_route_table.private.id
 }
 
-// Security Group for EC2 (Backend)
+// Security Group for EC2 (Backend) - محكم أكثر
 resource "aws_security_group" "ec2_backend" {
   name        = "${var.project_name}-ec2-backend-sg"
   description = "Allow HTTP/HTTPS from CloudFront, SSH from admin IPs"
@@ -143,13 +127,13 @@ resource "aws_security_group" "rds_mysql" {
   }
 }
 
-// EC2 Instance (Backend Laravel)
+// EC2 Instance (Backend Laravel) - في Public Subnet
 resource "aws_instance" "backend" {
   ami           = "ami-020cba7c55df1f615" // Ubuntu 22.04 LTS us-west-2
   instance_type = "t2.micro"
-  subnet_id     = aws_subnet.private.id
+  subnet_id     = aws_subnet.public.id
   vpc_security_group_ids = [aws_security_group.ec2_backend.id]
-  associate_public_ip_address = false
+  associate_public_ip_address = true
   key_name = var.ec2_key_name
   tags = {
     Name = "${var.project_name}-backend"
