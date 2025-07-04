@@ -22,7 +22,3 @@ variable "ec2_key_name" {
   type        = string
 }
 
-   variable "admin_ip" {
-     description = "Public IP address allowed to SSH"
-     type        = string
-   } 
