@@ -1,6 +1,6 @@
-# DevOps Project Structure on AWS (Free Tier)
+# DevOps Project Structure on AWS 
 
-This repository contains the infrastructure and automation code for deploying and managing a Laravel-based application on AWS, optimized for the Free Tier.
+This repository contains the infrastructure and automation code for deploying and managing a Laravel-based application on AWS.
 
 ## Structure
 
