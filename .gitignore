@@ -1,0 +1,17 @@
+# Terraform generated files and directories
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+*.tfplan*
+*.tfvars # Ignored for security, especially for sensitive variables
+
+# Local IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Any automatically generated local files (e.g., deployment zips if created locally)
+*.zip
+*.tar
+*.gz

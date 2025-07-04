@@ -89,8 +89,8 @@ resource "aws_security_group" "ec2_backend" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["ADMIN_IP/32"]
-  }
+    cidr_blocks = [var.admin_ip]
+ }
   egress {
     from_port   = 0
     to_port     = 0
@@ -128,7 +128,7 @@ resource "aws_security_group" "rds_mysql" {
 
 // EC2 Instance (Backend Laravel) - Public Subnet
 resource "aws_instance" "backend" {
-  ami           = "ami-020cba7c55df1f615" // Ubuntu 22.04 LTS us-west-2
+  ami           = "ami-05f991c49d264708f" // Ubuntu 22.04 LTS us-west-2
   instance_type = "t2.micro"
   subnet_id     = aws_subnet.public.id
   vpc_security_group_ids = [aws_security_group.ec2_backend.id]
