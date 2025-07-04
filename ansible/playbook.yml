@@ -1,0 +1,93 @@
+---
+- hosts: backend
+  become: true
+  vars:
+    laravel_repo: "https://github.com/YOUR_ORG/YOUR_LARAVEL_REPO.git"
+    app_dir: "/var/www/laravel"
+    db_host: "{{ lookup('env', 'DB_HOST') }}"
+    db_name: "{{ lookup('env', 'DB_NAME') }}"
+    db_user: "{{ lookup('env', 'DB_USER') }}"
+    db_pass: "{{ lookup('env', 'DB_PASS') }}"
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install required packages
+      apt:
+        name:
+          - nginx
+          - git
+          - unzip
+          - curl
+          - php-fpm
+          - php-mysql
+          - php-xml
+          - php-mbstring
+          - php-curl
+          - php-zip
+          - php-bcmath
+          - php-tokenizer
+          - php-json
+          - php-cli
+          - composer
+        state: present
+
+    - name: Clone Laravel app
+      git:
+        repo: "{{ laravel_repo }}"
+        dest: "{{ app_dir }}"
+        version: master
+        force: yes
+
+    - name: Install Laravel dependencies
+      composer:
+        command: install
+        working_dir: "{{ app_dir }}"
+        no_dev: yes
+        optimize_autoloader: yes
+
+    - name: Copy .env file
+      template:
+        src: env.j2
+        dest: "{{ app_dir }}/.env"
+        mode: 0644
+
+    - name: Set permissions for storage and bootstrap/cache
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0775'
+        recurse: yes
+      loop:
+        - "{{ app_dir }}/storage"
+        - "{{ app_dir }}/bootstrap/cache"
+
+    - name: Run Laravel migrations
+      command: php artisan migrate --force
+      args:
+        chdir: "{{ app_dir }}"
+
+    - name: Configure Nginx
+      template:
+        src: nginx_laravel.j2
+        dest: /etc/nginx/sites-available/laravel
+      notify: Reload Nginx
+
+    - name: Enable Nginx site
+      file:
+        src: /etc/nginx/sites-available/laravel
+        dest: /etc/nginx/sites-enabled/laravel
+        state: link
+        force: yes
+
+    - name: Remove default Nginx site
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
+  handlers:
+    - name: Reload Nginx
+      service:
+        name: nginx
+        state: reloaded 
