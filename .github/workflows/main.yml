@@ -1,20 +1,25 @@
-on: 
+name: Workflow Chain Example
+
+on:
   workflow_dispatch:
+
 jobs:
   job_1:
     runs-on: ubuntu-latest
-    staps:
-    - run: "echo Job ${{ github.job }}"
-
+    steps:   
+    - name: Echo job name
+      run: "echo Job ${{ github.job }}"
 
   job_2:
     runs-on: ubuntu-latest
     needs: job_1 
-    staps:
-    - run: "echo Job ${{ github.job }}"
+    steps:   
+    - name: Echo job name
+      run: "echo Job ${{ github.job }}"
 
   job_3: 
-    runs-on :ubuntu-latest
+    runs-on: ubuntu-latest   
     needs: job_2
-    staps:
-    - run: "echo Job ${{ github.job }}"
+    steps:   
+    - name: Echo job name
+      run: "echo Job ${{ github.job }}"
