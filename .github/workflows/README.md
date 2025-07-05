@@ -31,7 +31,6 @@ You need to configure the following secrets in your GitHub repository:
 
 ### Repository Structure
 
-Ensure your repository has the following structure:
 ```
 ├── .github/
 │   └── workflows/
