@@ -185,7 +185,7 @@ resource "aws_db_subnet_group" "mysql" {
 
 // S3 Bucket for React App
 resource "aws_s3_bucket" "frontend" {
-  bucket = "${var.project_name}-frontend-bucket"
+  bucket = "${var.project_name}-frontend-bucket-20250706"
   force_destroy = true
   tags = {
     Name = "${var.project_name}-frontend"
