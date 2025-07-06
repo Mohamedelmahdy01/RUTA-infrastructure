@@ -127,7 +127,10 @@ jobs:
     if: ${{ (needs.pre-checks.outputs.environment == 'production') && (github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main') }}
     needs: [pre-checks, terraform-plan]
     runs-on: ubuntu-latest
-    
+   
+    permissions: 
+      issues: write # Grants the authority to create and write issues
+
     steps:
       - name: Request Approval
         uses: trstringer/manual-approval@v1
