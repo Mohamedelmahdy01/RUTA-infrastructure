@@ -133,7 +133,7 @@ jobs:
         uses: trstringer/manual-approval@v1
         with:
           secret: ${{ github.token }}
-          approvers: ${{ secrets.PRODUCTION_APPROVERS || 'team-leads' }}
+          approvers: ${{ secrets.PRODUCTION_APPROVERS || Mohamedelmahdy01' }}
           minimum-approvals: 1
           issue-title: "Approval required for production deployment"
           issue-body: |
@@ -152,7 +152,7 @@ jobs:
             *Repository*: ${{ github.repository }}
             *Run*: #${{ github.run_number }}
             *Plan*: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-            *Approvers*: ${{ secrets.PRODUCTION_APPROVERS || 'team-leads' }}
+            *Approvers*: ${{ secrets.PRODUCTION_APPROVERS || 'Mohamedelmahdy01' }}
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
