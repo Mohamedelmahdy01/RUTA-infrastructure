@@ -2,7 +2,7 @@
 - hosts: backend
   become: true
   vars:
-    laravel_repo: "https://github.com/YOUR_ORG/YOUR_LARAVEL_REPO.git"
+    laravel_repo: "https://github.com/RUTA-GP/Back-end"
     app_dir: "/var/www/laravel"
     db_host: "{{ lookup('env', 'DB_HOST') }}"
     db_name: "{{ lookup('env', 'DB_NAME') }}"
